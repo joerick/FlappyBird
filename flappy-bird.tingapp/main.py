@@ -1,33 +1,37 @@
+from tingbot import *
 import pygame
 from pygame.locals import *
 import sys
 import random
 
+def random_offset():
+    return random.randint(150, 300)
+
 class FlappyBird:
     def __init__(self):
-        self.screen = pygame.display.set_mode((400, 708))
+        self.screen = screen.surface
         self.bird = pygame.Rect(65, 50, 50, 50)
-        self.background = pygame.image.load("assets/background.png").convert()
-        self.birdSprites = [pygame.image.load("assets/1.png").convert_alpha(), pygame.image.load("assets/2.png").convert_alpha(), pygame.image.load("assets/dead.png")]
-        self.wallUp = pygame.image.load("assets/bottom.png").convert_alpha()
-        self.wallDown = pygame.image.load("assets/top.png").convert_alpha()
-        self.gap = 130
-        self.wallx = 400
+        self.background = pygame.image.load("background.png").convert()
+        self.birdSprites = [pygame.image.load("1.png").convert_alpha(), pygame.image.load("2.png").convert_alpha(), pygame.image.load("dead.png")]
+        self.wallUp = pygame.image.load("bottom.png").convert_alpha()
+        self.wallDown = pygame.image.load("top.png").convert_alpha()
+        self.gap = 80
+        self.wallx = 320
         self.birdY = 350
         self.jump = 0
         self.jumpSpeed = 10
-        self.gravity= 5
+        self.gravity = 5
         self.dead = False
         self.sprite = 0
         self.counter = 0
-        self.offset = random.randint(-110, 110)
+        self.offset = random_offset()
 
     def updateWalls(self):  
-        self.wallx -= 2
+        self.wallx -= 3
         if self.wallx < -80:
-            self.wallx = 400
+            self.wallx = 320
             self.counter += 1
-            self.offset = random.randint(-110, 110)
+            self.offset = random_offset()
 
     def birdUpdate(self):
         if self.jump:
@@ -49,16 +53,15 @@ class FlappyBird:
             self.birdY = 50
             self.dead = False
             self.counter = 0
-            self.wallx = 400
-            self.offset = random.randint(-110, 110)
+            self.wallx = 320
+            self.offset = random_offset()
             self.gravity = 5
 
     def run(self):
         clock = pygame.time.Clock()
         pygame.font.init()
-        font = pygame.font.SysFont("Arial", 50)
         while True:
-            clock.tick(60)
+            clock.tick(30)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
@@ -71,7 +74,10 @@ class FlappyBird:
             self.screen.blit(self.background, (0, 0))
             self.screen.blit(self.wallUp, (self.wallx, 360 + self.gap - self.offset)) 
             self.screen.blit(self.wallDown, (self.wallx, 0 - self.gap - self.offset))
-            self.screen.blit(font.render(str(self.counter), -1, (255,255,255)), (200, 50))           
+            screen.text(
+                self.counter,
+                xy=(160,40),
+                color='white')
             if self.dead:
                 self.sprite = 2
             elif self.jump:
@@ -81,7 +87,7 @@ class FlappyBird:
                 self.sprite = 0
             self.updateWalls()
             self.birdUpdate()
-            pygame.display.update()
+            pygame.display.flip()
 
 if __name__ == "__main__":
     FlappyBird().run()
