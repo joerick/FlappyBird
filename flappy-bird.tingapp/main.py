@@ -41,6 +41,7 @@ class FlappyBird:
         else:
             self.birdY += self.gravity
             self.gravity += 0.2
+
         self.bird[1] = self.birdY
         upRect = pygame.Rect(self.wallx, 220 + self.gap - self.offset + 10, self.wallUp.get_width() - 10, self.wallUp.get_height())
         downRect = pygame.Rect(self.wallx, 0 - self.gap - self.offset - 10, self.wallDown.get_width() - 10, self.wallDown.get_height())
@@ -48,7 +49,7 @@ class FlappyBird:
             self.dead = True
         if downRect.colliderect(self.bird):
             self.dead = True
-        if self.bird[1] > 720:
+        if self.bird[1] > 260:
             self.bird[1] = 50
             self.birdY = 50
             self.dead = False
@@ -58,9 +59,10 @@ class FlappyBird:
             self.gravity = 5
         
     def do_jump(self):
-        self.jump = 17
-        self.gravity = 5
-        self.jumpSpeed = 10
+        if not self.dead:
+            self.jump = 17
+            self.gravity = 5
+            self.jumpSpeed = 10
 
     def step(self):
         # for event in pygame.event.get():
@@ -101,10 +103,10 @@ fb = FlappyBird()
 def step():
     fb.step()
 
-@press('left')
-@press('right')
-@press('midleft')
-@press('midright')
+@left_button.down
+@right_button.down
+@midleft_button.down
+@midright_button.down
 def button_press():
     fb.do_jump()
 
